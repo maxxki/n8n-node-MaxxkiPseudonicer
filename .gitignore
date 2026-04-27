@@ -1,0 +1,23 @@
+# Abhängigkeiten
+node_modules/
+
+# Build-Output (optional - viele committen dist/ nicht)
+dist/
+!dist/nodes/**/*.py        # aber Python-Skript im dist/ schon? besser nicht
+
+# Paket-Dateien
+*.tgz
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

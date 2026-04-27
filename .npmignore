@@ -1,0 +1,15 @@
+# Quellcode ausschließen (nicht in distribution)
+*.ts
+!*.d.ts
+!*.d.ts.map
+
+# Development files
+.eslintrc.js
+tsconfig.json
+.gitignore
+
+# Node modules
+node_modules/
+
+# ABER: dist/ MITNEHMEN
+!dist/

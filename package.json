@@ -1,0 +1,42 @@
+{
+  "name": "n8n-nodes-maxxki-pseudonicer",
+  "version": "1.0.0",
+  "description": "n8n node for PII pseudonymization (offline, IBAN/email/phone detection)",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "privacy",
+    "pii",
+    "gdpr",
+    "pseudonymization"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && npm run copy:python",
+    "copy:python": "cp nodes/MaxxkiPseudonicer/maxxki_pseudonicer.py dist/nodes/MaxxkiPseudonicer/ 2>/dev/null || echo 'Python script copy skipped (maybe already there)'",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist"
+  },
+  "n8n": {
+    "nodes": {
+      "n8n-nodes-maxxki-pseudonicer": "dist/nodes/MaxxkiPseudonicer/MaxxkiPseudonicer.node.js"
+    }
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.19.0",
+    "@types/ws": "^8.5.3",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "n8n-workflow": "^2.16.0",
+    "rimraf": "^5.0.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@n8n/expression-runtime": "^0.9.1"
+  },
+  "overrides": {
+    "uuid": "14.0.0"
+  }
+}
