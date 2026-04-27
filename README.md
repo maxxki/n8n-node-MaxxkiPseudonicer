@@ -1,6 +1,6 @@
 # n8n-nodes-maxxki-pseudonicer
 
-Eine n8n Community Node zur Pseudonymisierung von personenbezogenen Daten (PII) – komplett offline.
+Eine n8n Community Node zur Pseudonymisierung von personenbezogenen Daten (PII).
 
 ## Funktionen
 
