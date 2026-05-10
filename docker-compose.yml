@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=${N8N_HOST:-n8n}
+      - N8N_PORT=${N8N_PORT:-5678}
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL:-http://localhost:5678/webhook}
+      - NODE_ENV=${NODE_ENV:-production}
+      - DB_TYPE=${DB_TYPE:-postgres}
+      - DB_POSTGRES_HOST=${DB_POSTGRES_HOST:-db}
+      - DB_POSTGRES_PORT=${DB_POSTGRES_PORT:-5432}
+      - DB_POSTGRES_DATABASE=${DB_POSTGRES_DATABASE:-n8n}
+      - DB_POSTGRES_USER=${DB_POSTGRES_USER:-n8n}
+      - DB_POSTGRES_PASSWORD=${DB_POSTGRES_PASSWORD:-n8n}
+      - N8N_LOG_LEVEL=${N8N_LOG_LEVEL:-info}
+      - N8N_PAYLOAD_MAX_SIZE=${N8N_PAYLOAD_MAX_SIZE:-1073741824}
+      - N8N_SESSION_STORAGE_ENGINE=${N8N_SESSION_STORAGE_ENGINE:-redis}
+      - N8N_REDIS_HOST=${N8N_REDIS_HOST:-redis}
+      - N8N_REDIS_PORT=${N8N_REDIS_PORT:-6379}
+      # -- MAXXKI PII Pseudonicer specific settings --
+      # Enable Python script execution (ensure python3 is in the n8n image or mounted)
+      # Example: Mount a custom Dockerfile for n8n that includes python3
+      # OR ensure python3 is available in the base n8n image you choose.
+      - SHOW_TYPE_IN_PLACEHOLDER=true
+      - SECURE_ANONYMIZE=true
+      - VALIDATE_CHECKSUMS=true
+    volumes:
+      # Mount custom nodes from source (for development/building)
+      - ./nodes:/home/node/.n8n/custom
+      # Mount the built artifacts (JS files and Python script)
+      # The TS code in MaxxkiPseudonicer.node.js (located in dist/nodes/MaxxkiPseudonicer/)
+      # will use path.join(__dirname, 'maxxki_pseudonicer.py').
+      # __dirname will resolve to '/home/node/.n8n/dist/nodes/MaxxkiPseudonicer/' inside the container.
+      # The build script copies maxxki_pseudonicer.py to dist/nodes/MaxxkiPseudonicer/ on the host.
+      # This mount ensures it's available at the correct relative path for __dirname.
+      - ./dist:/home/node/.n8n/dist
+
+      # Note: The n8n image needs Python 3 installed to execute the maxxki_pseudonicer.py script.
+      # You might need to use a custom Dockerfile for n8n that includes Python 3,
+      # or ensure it's available in the base image you select.
+
+      # For production, you might want to persist data
+      - n8n_data:/home/node/.n8n/data
+    depends_on:
+      - redis
+      # - ollama # Uncomment if using Ollama
+      - db
+    restart: always
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - n8n_redis_data:/data
+    restart: always
+
+  db:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=n8n
+      - POSTGRES_USER=n8n
+      - POSTGRES_PASSWORD=n8n
+    volumes:
+      - n8n_postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+  #     # Mount models for Qwen if you want to use it
+  #     # Example: - ./ollama_models:/root/.ollama/models
+  #   restart: always
+
+volumes:
+  n8n_data:
+  n8n_redis_data:
+  n8n_postgres_data:
+  # ollama_data:
