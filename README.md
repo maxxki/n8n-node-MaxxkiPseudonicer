@@ -18,7 +18,7 @@ Eine n8n Community Node zur Pseudonymisierung von personenbezogenen Daten (PII).
 
 ```bash
 cd ~/.n8n/custom
-git clone https://github.com/deinname/n8n-nodes-maxxki-pseudonicer
+git clone https://github.com/maxxki/n8n-nodes-maxxki-pseudonicer
 cd n8n-nodes-maxxki-pseudonicer
 npm install
 npm run build
